@@ -34,7 +34,7 @@ class Controller:
             if not self.model.connect():
                 self.view.display_error("Failed to connect to database")
                 return
-
+            self.view.display_message("Connected to database")
             while True:
                 self.view.show()
                 choice = self.view.get_input()
