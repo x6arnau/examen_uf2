@@ -7,6 +7,8 @@ from typing import List, Callable, Tuple
 class MenuItem:
     """
     Represents a menu item with text, command, and associated handler.
+    author: Arnau Núñez López
+    grup: DAM2
 
     Attributes:
         text (str): Display text for the menu item

@@ -6,6 +6,8 @@ from proven.views.menu import MenuView
 class Controller:
     """
     Main controller class implementing application logic and menu handlers.
+    author: Arnau Núñez López
+    grup: DAM2
     """
 
     def __init__(self, model: Model, view: MenuView):

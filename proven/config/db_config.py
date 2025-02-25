@@ -1,4 +1,3 @@
-# proven/config/db_config.py
 import psycopg2
 from psycopg2 import OperationalError
 from dataclasses import dataclass
@@ -7,6 +6,18 @@ from typing import Any
 
 @dataclass
 class DbConfig:
+    """
+    Dataclass to store database configuration details.
+    author: Arnau Núñez López
+    grup: DAM2
+
+    Attributes:
+        user (str): Database username.
+        password (str): Database password.
+        host (str): Database host address.
+        port (str): Database port number.
+        dbname (str): Database name.
+    """
     user: str = "odoo"
     password: str = "rEURO841.Turboman"
     host: str = "192.168.56.102"
@@ -15,8 +26,14 @@ class DbConfig:
 
 
 class DatabaseConnection:
+    """
+    Class to manage the database connection and operations.
+    """
+
     def __init__(self):
-        """Initialize database connection configuration."""
+        """
+        Initialize database connection configuration.
+        """
         self.connection = None
         self.cursor = None
         self._config = DbConfig()
@@ -26,7 +43,10 @@ class DatabaseConnection:
         Connect to the PostgreSQL database.
 
         Returns:
-            bool: True if connection is successful
+            bool: True if connection is successful.
+
+        Raises:
+            DatabaseError: If connection fails.
         """
         try:
             self.connection = psycopg2.connect(
@@ -42,7 +62,12 @@ class DatabaseConnection:
             raise DatabaseError(f"Connection failed: {str(e)}")
 
     def disconnect(self) -> None:
-        """Disconnect from the PostgreSQL database."""
+        """
+        Disconnect from the PostgreSQL database.
+
+        Raises:
+            DatabaseError: If disconnection fails.
+        """
         try:
             if self.cursor:
                 self.cursor.close()
@@ -56,11 +81,14 @@ class DatabaseConnection:
         Execute a SQL query with optional parameters.
 
         Args:
-            query (str): SQL query to execute
-            params (Optional[Tuple]): Query parameters
+            query (str): SQL query to execute.
+            params (Optional[Tuple]): Query parameters.
 
         Returns:
-            Any: Query results or success status
+            Any: Query results or success status.
+
+        Raises:
+            DatabaseError: If query execution fails.
         """
         try:
             self.cursor.execute(query, params)
@@ -74,5 +102,7 @@ class DatabaseConnection:
 
 
 class DatabaseError(Exception):
-    """Custom exception for database errors."""
+    """
+    Custom exception for database errors.
+    """
     pass

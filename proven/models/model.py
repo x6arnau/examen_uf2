@@ -6,6 +6,8 @@ from proven.config.db_config import DatabaseConnection, DatabaseError
 class Model:
     """
     Database model class handling database operations.
+    author: Arnau Núñez López
+    grup: DAM2
     """
 
     def __init__(self):

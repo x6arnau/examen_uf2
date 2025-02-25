@@ -6,6 +6,8 @@ from proven.controllers.controller import Controller
 def main():
     """
     Main function to initialize and run the application.
+    author: Arnau Núñez López
+    grup: DAM2
     """
     model = Model()
     view = MenuOptions()
