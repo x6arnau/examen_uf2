@@ -40,18 +40,20 @@ A Python application implementing the MVC (Model-View-Controller) pattern to per
 
 ## Usage
 
-1. Using the MenuView class:
+1. Using the MenuOptions class:
     ```python
-    view = MenuView()
-    view.add_item("Option Text", "command", handler_function)
+    super().__init__()
+        self.add_item("Exit", "exit")
+        self.add_item("Option 1", "option1")
+        self.add_item("Option 2", "option2")
     ```
 
 2. Using the Controller class:
     ```python
-   def _setup_menu(self) -> None:
-       self.view.add_item("Exit", "exit", self._handle_exit)
-       self.view.add_item("View Data", "view", self._handle_view_data)
-       self.view.add_item("Search", "search", self._handle_search)
+   """Set up menu handlers for each menu item."""
+        self.view.items[0].handler = self._handle_exit
+        self.view.items[1].handler = self._handle_view_data
+        self.view.items[2].handler = self._handle_search
    ```
 
 3. Handler function examples:
