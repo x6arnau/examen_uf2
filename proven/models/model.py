@@ -1,6 +1,5 @@
 # proven/models/model.py
 from typing import Optional, Tuple, Any, List
-
 from proven.config.db_config import DatabaseConnection, DatabaseError
 
 
@@ -49,7 +48,7 @@ class Model:
             raise ModelError(str(e))
 
     def get_table_data(self, table: str, columns: str = "*",
-                     conditions: Optional[Tuple] = None) -> List[Tuple]:
+                       conditions: Optional[Tuple] = None) -> List[Tuple]:
         """
         Get data from a table with optional columns and conditions.
 

@@ -1,6 +1,9 @@
+# proven/config/db_config.py
 import psycopg2
 from psycopg2 import OperationalError
 from dataclasses import dataclass
+from typing import Any
+
 
 @dataclass
 class DbConfig:
@@ -10,13 +13,21 @@ class DbConfig:
     port: str = "5432"
     dbname: str = "prova_empresa"
 
+
 class DatabaseConnection:
     def __init__(self):
+        """Initialize database connection configuration."""
         self.connection = None
         self.cursor = None
         self._config = DbConfig()
 
-    def connect(self):
+    def connect(self) -> bool:
+        """
+        Connect to the PostgreSQL database.
+
+        Returns:
+            bool: True if connection is successful
+        """
         try:
             self.connection = psycopg2.connect(
                 user=self._config.user,
@@ -30,7 +41,8 @@ class DatabaseConnection:
         except OperationalError as e:
             raise DatabaseError(f"Connection failed: {str(e)}")
 
-    def disconnect(self):
+    def disconnect(self) -> None:
+        """Disconnect from the PostgreSQL database."""
         try:
             if self.cursor:
                 self.cursor.close()
@@ -39,7 +51,17 @@ class DatabaseConnection:
         except Exception as e:
             raise DatabaseError(f"Disconnect failed: {str(e)}")
 
-    def execute_query(self, query: str, params=None):
+    def execute_query(self, query: str, params=None) -> Any:
+        """
+        Execute a SQL query with optional parameters.
+
+        Args:
+            query (str): SQL query to execute
+            params (Optional[Tuple]): Query parameters
+
+        Returns:
+            Any: Query results or success status
+        """
         try:
             self.cursor.execute(query, params)
             if query.lower().strip().startswith('select'):
@@ -50,5 +72,7 @@ class DatabaseConnection:
             self.connection.rollback()
             raise DatabaseError(f"Query execution failed: {str(e)}")
 
+
 class DatabaseError(Exception):
+    """Custom exception for database errors."""
     pass

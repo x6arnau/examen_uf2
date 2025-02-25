@@ -1,5 +1,5 @@
+# proven/views/menu_options.py
 from proven.views.menu import MenuView
-from proven.views.menu import MenuItem
 
 
 class MenuOptions(MenuView):
