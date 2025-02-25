@@ -24,10 +24,7 @@ def main():
         return
 
     menu_view.display_connection_info(model.db.connection.dsn)
-    try:
-        menu_view.display()
-    finally:
-        model.disconnect_from_db()
+    menu_view.display()
 
 
 if __name__ == "__main__":

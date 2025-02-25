@@ -1,4 +1,6 @@
 # proven/models/model.py
+import sys
+
 from proven.config.db_config import DatabaseConnection
 
 
@@ -31,8 +33,17 @@ class Model:
 
     def disconnect_from_db(self):
         """Close database connection."""
-        self.db.disconnect()
-        self.view.display_message("Database connection closed")
+        if self.db.connection is not None:
+            self.db.disconnect()
+            self.view.display_message("Database connection closed")
+
+    def exit_application(self):
+        """
+        Safely exits the application by disconnecting from DB and terminating.
+        """
+        self.disconnect_from_db()
+        self.view.display_message("Exiting application")
+        sys.exit(0)
 
     def execute_query(self, query, params=None):
         """

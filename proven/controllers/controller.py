@@ -29,7 +29,7 @@ class Controller:
             action (str): Command string representing the user action
         """
         if action == "exit":
-            self.view.display_message("Exiting application")
+            self.model.exit_application()
         elif action == "option1":
             self.view.display_message("Option 1 selected")
             # TODO exemple use generic_query

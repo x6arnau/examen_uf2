@@ -23,6 +23,7 @@ class MenuView:
         """
         self.control = control
         self.menu = MenuOptions()
+        self.menu.view = self
 
     def display(self):
         """
