@@ -29,9 +29,9 @@ class Controller:
             action (str): Command string representing the user action
         """
         if action == "exit":
-            print("Exiting...")
+            self.view.display_message("Exiting application")
         elif action == "option1":
-            print("Option 1 selected")
+            self.view.display_message("Option 1 selected")
             # TODO exemple use generic_query
             self.generic_query(
                 "table_name",
@@ -39,7 +39,7 @@ class Controller:
                 ("column1 = %s", ("value1",))
             )
         elif action == "option2":
-            print("Option 2 selected")
+            self.view.display_message("Option 2 selected")
             # TODO exemple use generic_query
             self.generic_query(
                 "table_name",
@@ -47,7 +47,7 @@ class Controller:
                 ("column1 = %s AND column2 > %s", ("value1", "value2"))
             )
         else:
-            print("Invalid option")
+            self.view.display_message("Invalid action")
 
     def generic_query(self, table_name, columns, conditions=None):
         """

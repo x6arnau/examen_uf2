@@ -1,6 +1,7 @@
 # proven/views/menu_view.py
 from proven.views.menu_options import MenuOptions
 
+
 class MenuView:
     """
     View class handling menu display and user interaction.
@@ -48,4 +49,59 @@ class MenuView:
         elif action == 2:
             self.control.process_request("option2")
         else:
-            print("Invalid option")
+            self.control.process_request(None)
+
+    def show_menu(self, title, options):
+        """
+        Display menu title and options.
+
+        Args:
+            title (str): Menu title
+            options (list): List of menu options
+        """
+        print(f"============ {title} ============")
+        for idx, option in enumerate(options):
+            print(f"[{idx}] {option.text}")
+
+    def display_message(self, message):
+        """
+        Display a message to the user.
+
+        Args:
+            message (str): Message to display
+        """
+        print(message)
+
+    def display_error(self, error):
+        """
+        Display an error message.
+
+        Args:
+            error (str): Error message to display
+        """
+        print(f"Error: {error}")
+
+    def display_query_results(self, table_name, results):
+        """
+        Display query results row by row.
+
+        Args:
+            table_name (str): Name of the queried table
+            results (list): Query results to display
+        """
+        print(f"\nQuery results from {table_name}:")
+        print("Press Enter to see each result (or 'q' to quit):")
+        for row in results:
+            user_input = input()
+            if user_input.lower() == 'q':
+                break
+            print(row)
+
+    def display_connection_info(self, dsn):
+        """
+        Display database connection information.
+
+        Args:
+            dsn (str): Database connection string
+        """
+        print(f"Connected to database: {dsn}")

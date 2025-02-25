@@ -13,14 +13,18 @@ def main():
     Initializes MVC components and starts the application.
     """
     model = Model()
+    controller = Controller(model, None)
+    menu_view = MenuView(controller, model)
+    controller.view = menu_view
+    model.view = menu_view
+    model.db.view = menu_view
+
     if not model.connect_to_db():
-        print("Error connecting to database")
+        menu_view.display_error("Error connecting to database")
         return
-    print("Connected to database: " + model.db.connection.dsn)
+
+    menu_view.display_connection_info(model.db.connection.dsn)
     try:
-        controller = Controller(model, None)
-        menu_view = MenuView(controller, model)
-        controller.view = menu_view
         menu_view.display()
     finally:
         model.disconnect_from_db()

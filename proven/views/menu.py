@@ -8,6 +8,7 @@ class Menu:
     Attributes:
         title (str): Menu title
         options (list): List of menu options
+        view: View instance for displaying output
     """
 
     def __init__(self, title=None):
@@ -19,6 +20,7 @@ class Menu:
         """
         self.title = title
         self.options = []
+        self.view = None
 
     def add_option(self, option):
         """
@@ -31,9 +33,8 @@ class Menu:
 
     def show(self):
         """Display menu title and numbered options."""
-        print(f"============ {self.title} ============")
-        for idx, option in enumerate(self.options):
-            print(f"[{idx}] {option.text}")
+        if hasattr(self, 'view'):
+            self.view.show_menu(self.title, self.options)
 
     def get_selected_option(self):
         """

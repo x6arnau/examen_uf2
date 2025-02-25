@@ -11,12 +11,14 @@ class Model:
     Attributes:
         _data: Private attribute to store data
         db: Database connection instance
+        view: View instance for displaying output
     """
 
     def __init__(self):
         """Initialize model with empty data and database connection."""
         self._data = None
         self.db = DatabaseConnection()
+        self.view = None
 
     def connect_to_db(self):
         """
@@ -30,6 +32,7 @@ class Model:
     def disconnect_from_db(self):
         """Close database connection."""
         self.db.disconnect()
+        self.view.display_message("Database connection closed")
 
     def execute_query(self, query, params=None):
         """
@@ -42,7 +45,14 @@ class Model:
         Returns:
             Query results or None if error occurs
         """
-        return self.db.execute_query(query, params)
+        try:
+            result = self.db.execute_query(query, params)
+            if result is None:
+                self.view.display_error("Query execution failed")
+            return result
+        except Exception as e:
+            self.view.display_error(str(e))
+            return None
 
     def generic_query(self, table_name="table", columns="*", conditions=None):
         """
@@ -66,34 +76,10 @@ class Model:
 
             results = self.execute_query(query, params)
             if results:
-                print(f"\nQuery results from {table_name}:")
-                print("Press Enter to see each result (or 'q' to quit):")
-                for row in results:
-                    user_input = input()
-                    if user_input.lower() == 'q':
-                        break
-                    print(row)
+                self.view.display_query_results(table_name, results)
                 return True
-            print("No results found")
+            self.view.display_message("No results found")
             return False
         except Exception as e:
-            print(f"Error executing query: {e}")
+            self.view.display_error(f"Error executing query: {e}")
             return False
-
-    def get_data(self):
-        """
-        Retrieve stored data.
-
-        Returns:
-            The stored data value
-        """
-        return self._data
-
-    def set_data(self, data):
-        """
-        Set new data value.
-
-        Args:
-            data: New data value to store
-        """
-        self._data = data

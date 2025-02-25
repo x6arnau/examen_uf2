@@ -12,12 +12,14 @@ class DatabaseConnection:
     Attributes:
         connection: PostgreSQL connection instance
         cursor: Database cursor for executing queries
+        view: View instance for displaying output
     """
 
     def __init__(self):
         """Initialize database connection parameters."""
         self.connection = None
         self.cursor = None
+        self.view = None
 
     def connect(self):
         """
@@ -37,7 +39,7 @@ class DatabaseConnection:
             self.cursor = self.connection.cursor()
             return True
         except OperationalError as e:
-            print(f"Error: {e}")
+            self.view.display_error(str(e))
             return False
 
     def disconnect(self):
@@ -46,7 +48,6 @@ class DatabaseConnection:
             self.cursor.close()
         if self.connection:
             self.connection.close()
-        print("Database connection closed")
 
     def execute_query(self, query, params=None):
         """
@@ -68,6 +69,6 @@ class DatabaseConnection:
                 self.connection.commit()
                 return True
         except Exception as e:
-            print(f"Error: {e}")
+            self.view.display_error(str(e))
             self.connection.rollback()
             return None
