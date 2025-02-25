@@ -31,11 +31,12 @@ A Python application implementing the MVC (Model-View-Controller) pattern to per
 ## Project Structure
 
 - `proven/`: Source code directory
-- `db_config.py`: Database configuration
-- `controller.py`: Controller class
-- `model.py`: Model class
-- `view.py`: View class
-- `main.py`: Main program
+- `config/db_config.py`: Database configuration
+- `controllers/controller.py`: Controller class
+- `models/model.py`: Model class
+- `views/menu.py`: Menu class
+- `views/menu_options.py`: MenuOptions class
+- `__main__.py`: Main program
 
 ## Usage
 

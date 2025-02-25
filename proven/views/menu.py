@@ -13,11 +13,9 @@ class MenuItem:
     Attributes:
         text (str): Display text for the menu item
         command (str): Command identifier for the menu item
-        handler (Callable): Function to be called when item is selected
     """
     text: str
     command: str
-    handler: Callable
 
 
 class MenuView:
@@ -29,16 +27,15 @@ class MenuView:
         """Initialize an empty menu items list."""
         self.items: List[MenuItem] = []
 
-    def add_item(self, text: str, command: str, handler: Callable) -> None:
+    def add_item(self, text: str, command: str) -> None:
         """
         Add a new menu item to the menu.
 
         Args:
             text (str): Display text for the menu item
             command (str): Command identifier for the menu item
-            handler (Callable): Function to be called when item is selected
         """
-        self.items.append(MenuItem(text, command, handler))
+        self.items.append(MenuItem(text, command))
 
     def show(self) -> None:
         """Display all menu items with their index numbers."""
