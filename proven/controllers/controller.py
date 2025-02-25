@@ -62,20 +62,22 @@ class Controller:
     def _handle_view_data(self) -> None:
         """Handle view all data menu option."""
         try:
-            results = self.model.get_table_data("table_name")
-            self.view.display_results(results)
+            #results = self.model.get_table_data("table_name")
+            #self.view.display_results(results)
+            self.view.display_message("Option 1 selected")
         except ModelError as e:
             self.view.display_error(str(e))
 
     def _handle_search(self) -> None:
         """Handle search menu option."""
         try:
-            name = input("Enter data to search: ")
-            results = self.model.get_table_data(
-                "table_name",
-                "column1, column2, column3",
-                ("column2 LIKE %s", (f"%{name}%",))
-            )
-            self.view.display_results(results)
+            #name = input("Enter data to search: ")
+            #results = self.model.get_table_data(
+            #    "table_name",
+            #    "column1, column2, column3",
+            #    ("column2 LIKE %s", (f"%{name}%",))
+            #)
+            #self.view.display_results(results)
+            self.view.display_message("Option 2 selected")
         except ModelError as e:
             self.view.display_error(str(e))
