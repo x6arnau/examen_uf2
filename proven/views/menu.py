@@ -1,52 +1,95 @@
 # proven/views/menu.py
-class Menu:
+from dataclasses import dataclass
+from typing import List, Callable, Tuple
+
+
+@dataclass
+class MenuItem:
     """
-    Base menu class for displaying options and handling user input.
-    author: Arnau Núñez López
-    grup: DAM2
+    Represents a menu item with text, command, and associated handler.
 
     Attributes:
-        title (str): Menu title
-        options (list): List of menu options
-        view: View instance for displaying output
+        text (str): Display text for the menu item
+        command (str): Command identifier for the menu item
+        handler (Callable): Function to be called when item is selected
+    """
+    text: str
+    command: str
+    handler: Callable
+
+
+class MenuView:
+    """
+    Base class for menu views implementing common menu functionality.
     """
 
-    def __init__(self, title=None):
+    def __init__(self):
+        """Initialize an empty menu items list."""
+        self.items: List[MenuItem] = []
+
+    def add_item(self, text: str, command: str, handler: Callable) -> None:
         """
-        Initialize menu with optional title.
+        Add a new menu item to the menu.
 
         Args:
-            title (str, optional): Menu title. Defaults to None.
+            text (str): Display text for the menu item
+            command (str): Command identifier for the menu item
+            handler (Callable): Function to be called when item is selected
         """
-        self.title = title
-        self.options = []
-        self.view = None
+        self.items.append(MenuItem(text, command, handler))
 
-    def add_option(self, option):
+    def show(self) -> None:
+        """Display all menu items with their index numbers."""
+        print("\n=== Menu ===")
+        for idx, item in enumerate(self.items):
+            print(f"[{idx}] {item.text}")
+
+    def get_input(self) -> int:
         """
-        Add new option to menu.
-
-        Args:
-            option (Option): Option instance to add
-        """
-        self.options.append(option)
-
-    def show(self):
-        """Display menu title and numbered options."""
-        if hasattr(self, 'view'):
-            self.view.show_menu(self.title, self.options)
-
-    def get_selected_option(self):
-        """
-        Get user input for option selection.
+        Get user input for menu selection.
 
         Returns:
-            int: Selected option index or -1 if invalid
+            int: Selected menu index or -1 if invalid input
         """
         try:
-            option = int(input("Select an option: "))
-            if 0 <= option < len(self.options):
-                return option
-            return -1
+            choice = int(input("\nSelect option: "))
+            if 0 <= choice < len(self.items):
+                return choice
+            raise ValueError()
         except ValueError:
             return -1
+
+    def display_message(self, message: str) -> None:
+        """
+        Display a message to the user.
+
+        Args:
+            message (str): Message to display
+        """
+        print(message)
+
+    def display_error(self, error: str) -> None:
+        """
+        Display an error message to the user.
+
+        Args:
+            error (str): Error message to display
+        """
+        print(f"Error: {error}")
+
+    def display_results(self, results: List[Tuple]) -> None:
+        """
+        Display query results with pagination.
+
+        Args:
+            results (List[Tuple]): Database query results to display
+        """
+        if not results:
+            print("No results found.")
+            return
+
+        print("\nResults:")
+        for row in results:
+            print(row)
+            if input("Press Enter to continue (q to quit): ").lower() == 'q':
+                break

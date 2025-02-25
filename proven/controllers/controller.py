@@ -1,86 +1,79 @@
 # proven/controllers/controller.py
+from proven.models.model import ModelError, Model
+from proven.views.menu import MenuView
+
+
 class Controller:
     """
-    Controls the interaction between the model and view components.
-    author: Arnau Núñez López
-    grup: DAM2
-
-    Attributes:
-        model: The data model instance
-        view: The view instance for user interface
+    Main controller class implementing application logic and menu handlers.
     """
 
-    def __init__(self, model, view):
+    def __init__(self, model: Model, view: MenuView):
         """
         Initialize controller with model and view.
 
         Args:
-            model: Model instance to handle data
-            view: View instance to handle UI
+            model (Model): Database model instance
+            view (MenuView): Menu view instance
         """
         self.model = model
         self.view = view
+        self._setup_menu()
 
-    def process_request(self, action):
-        """
-        Process user action requests.
+    def _setup_menu(self) -> None:
+        """Set up menu handlers for each menu item."""
+        self.view.items[0].handler = self._handle_exit
+        self.view.items[1].handler = self._handle_view_data
+        self.view.items[2].handler = self._handle_search
 
-        Args:
-            action (str): Command string representing the user action
+    def run(self) -> None:
         """
-        if action == "exit":
-            self.model.exit_application()
-        elif action == "option1":
-            self.view.display_message("Option 1 selected")
-            # TODO exemple use generic_query
-            self.generic_query(
+        Main application loop handling menu interaction and database connection.
+        """
+        try:
+            if not self.model.connect():
+                self.view.display_error("Failed to connect to database")
+                return
+
+            while True:
+                self.view.show()
+                choice = self.view.get_input()
+
+                if choice == -1:
+                    self.view.display_error("Invalid option")
+                    continue
+
+                self.view.items[choice].handler()
+
+        except ModelError as e:
+            self.view.display_error(str(e))
+        finally:
+            self.model.disconnect()
+
+    def _handle_exit(self) -> None:
+        """Handle exit menu option and cleanup."""
+        self.view.display_message("Goodbye!")
+        self.model.disconnect()
+        self.view.display_message("Disconnected from database")
+        exit(0)
+
+    def _handle_view_data(self) -> None:
+        """Handle view all data menu option."""
+        try:
+            results = self.model.get_table_data("table_name")
+            self.view.display_results(results)
+        except ModelError as e:
+            self.view.display_error(str(e))
+
+    def _handle_search(self) -> None:
+        """Handle search menu option."""
+        try:
+            name = input("Enter data to search: ")
+            results = self.model.get_table_data(
                 "table_name",
-                "column1, column2",
-                ("column1 = %s", ("value1",))
+                "column1, column2, column3",
+                ("column2 LIKE %s", (f"%{name}%",))
             )
-        elif action == "option2":
-            self.view.display_message("Option 2 selected")
-            # TODO exemple use generic_query
-            self.generic_query(
-                "table_name",
-                "column1, column2",
-                ("column1 = %s AND column2 > %s", ("value1", "value2"))
-            )
-        else:
-            self.view.display_message("Invalid action")
-
-    def generic_query(self, table_name, columns, conditions=None):
-        """
-        Execute a generic database query with flexible conditions.
-
-        Args:
-            table_name (str): Name of the table to query
-            columns (str): Columns to select (comma-separated string)
-            conditions (tuple, optional): Tuple containing (where_clause, params)
-                where_clause: SQL WHERE clause with %s placeholders
-                params: Tuple of values to replace placeholders
-
-        Examples:
-            # Query all employees
-            self.generic_query("employees", "id, name")
-
-            # Query with single condition
-            self.generic_query("employees", "id, name, salary",
-                             ("salary > %s", (50000,)))
-
-            # Query with multiple conditions
-            self.generic_query("employees", "id, name, department",
-                             ("department = %s AND salary >= %s", ("IT", 60000)))
-
-            # Query with LIKE condition
-            self.generic_query("employees", "id, name",
-                             ("name LIKE %s", ('%Smith%',)))
-
-            # Query with IN condition
-            self.generic_query("employees", "id, name",
-                             ("department IN %s", (('IT', 'HR'),)))
-
-        Returns:
-            bool: True if query executed successfully, False otherwise
-        """
-        return self.model.generic_query(table_name, columns, conditions)
+            self.view.display_results(results)
+        except ModelError as e:
+            self.view.display_error(str(e))

@@ -1,96 +1,75 @@
 # proven/models/model.py
-import sys
+from typing import Optional, Tuple, Any, List
 
-from proven.config.db_config import DatabaseConnection
+from proven.config.db_config import DatabaseConnection, DatabaseError
 
 
 class Model:
     """
-    Data model class for storing and managing application data.
-    author: Arnau Núñez López
-    grup: DAM2
-
-    Attributes:
-        _data: Private attribute to store data
-        db: Database connection instance
-        view: View instance for displaying output
+    Database model class handling database operations.
     """
 
     def __init__(self):
-        """Initialize model with empty data and database connection."""
-        self._data = None
-        self.db = DatabaseConnection()
-        self.view = None
+        """Initialize database connection."""
+        self._db = DatabaseConnection()
 
-    def connect_to_db(self):
+    def connect(self) -> bool:
         """
-        Establish database connection.
+        Connect to the database.
 
         Returns:
-            bool: True if connection successful, False otherwise
+            bool: True if connection successful
         """
-        return self.db.connect()
+        try:
+            return self._db.connect()
+        except DatabaseError as e:
+            raise ModelError(str(e))
 
-    def disconnect_from_db(self):
-        """Close database connection."""
-        if self.db.connection is not None:
-            self.db.disconnect()
-            self.view.display_message("Database connection closed")
+    def disconnect(self) -> None:
+        """Disconnect from the database."""
+        try:
+            self._db.disconnect()
+        except DatabaseError as e:
+            raise ModelError(str(e))
 
-    def exit_application(self):
+    def execute_query(self, query: str, params: Optional[Tuple] = None) -> Any:
         """
-        Safely exits the application by disconnecting from DB and terminating.
-        """
-        self.disconnect_from_db()
-        self.view.display_message("Exiting application")
-        sys.exit(0)
-
-    def execute_query(self, query, params=None):
-        """
-        Execute database query.
+        Execute a database query with optional parameters.
 
         Args:
             query (str): SQL query to execute
-            params (tuple, optional): Query parameters
+            params (Optional[Tuple]): Query parameters
 
         Returns:
-            Query results or None if error occurs
+            Any: Query results
         """
         try:
-            result = self.db.execute_query(query, params)
-            if result is None:
-                self.view.display_error("Query execution failed")
-            return result
-        except Exception as e:
-            self.view.display_error(str(e))
-            return None
+            return self._db.execute_query(query, params)
+        except DatabaseError as e:
+            raise ModelError(str(e))
 
-    def generic_query(self, table_name="table", columns="*", conditions=None):
+    def get_table_data(self, table: str, columns: str = "*",
+                     conditions: Optional[Tuple] = None) -> List[Tuple]:
         """
-        Execute a generic SELECT query on the database and display results one by one.
+        Get data from a table with optional columns and conditions.
 
         Args:
-            table_name (str): Name of the table to query
-            columns (str): Columns to select, defaults to all
-            conditions (tuple): Optional WHERE clause conditions and parameters
+            table (str): Table name
+            columns (str): Columns to select
+            conditions (Optional[Tuple]): WHERE clause and parameters
 
         Returns:
-            bool: True if query executed successfully, False otherwise
+            List[Tuple]: Query results
         """
-        try:
-            query = f"SELECT {columns} FROM {table_name}"
-            if conditions:
-                query += f" WHERE {conditions[0]}"
-                params = conditions[1]
-            else:
-                params = None
+        query = f"SELECT {columns} FROM {table}"
+        if conditions:
+            query += f" WHERE {conditions[0]}"
+            params = conditions[1]
+        else:
+            params = None
+        return self.execute_query(query, params)
 
-            results = self.execute_query(query, params)
-            if results:
-                self.view.display_query_results(table_name, results)
-                return True
-            self.view.display_message("No results found")
-            return False
-        except Exception as e:
-            self.view.display_error(f"Error executing query: {e}")
-            return False
+
+class ModelError(Exception):
+    """Custom exception for model errors."""
+    pass

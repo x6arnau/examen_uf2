@@ -39,27 +39,70 @@ A Python application implementing the MVC (Model-View-Controller) pattern to per
 
 ## Usage
 
-- Query all example:
-  ```python
-  self.generic_query("table_name", "column1, column2")
-  ```
-
-- Query with single condition example:
-  ```python
-    self.generic_query("table_name", "column1, column2, column3", ("column1 > %s", (value1,)))
+1. Using the MenuView class:
+    ```python
+    view = MenuView()
+    view.add_item("Option Text", "command", handler_function)
     ```
 
-- Query with multiple conditions example:
-  ```python
-    self.generic_query("table_name", "column1, column2", ("column1 = %s AND column2 > %s", ("value1", "value2")))
+2. Using the Controller class:
+    ```python
+   def _setup_menu(self) -> None:
+       self.view.add_item("Exit", "exit", self._handle_exit)
+       self.view.add_item("View Data", "view", self._handle_view_data)
+       self.view.add_item("Search", "search", self._handle_search)
    ```
 
-- Query with LIKE condition example:
-  ```python
-    self.generic_query("table_name", "column1, column2", ("column1 LIKE %s", ("value1",)))
-   ```
+3. Handler function examples:
 
-- Query with IN condition example:
-  ```python
-    self.generic_query("table_name", "column1, column2", ("column1 IN %s", ("(value1, value2, value3)",)))
-   ```
+    ```python
+    def _handle_view_data(self) -> None:
+        try:
+            results = self.model.get_table_data("table_name")
+            self.view.display_results(results)
+        except ModelError as e:
+            self.view.display_error(str(e))
+    ```
+   
+    ```python
+      def _handle_search_by_id(self) -> None:
+          try:
+              id = input("Enter employee ID: ")
+              results = self.model.get_table_data(
+                  "employees",
+                  "name, department",
+                  ("id = %s", (id,))
+              )
+              self.view.display_results(results)
+          except ModelError as e:
+              self.view.display_error(str(e))
+    ```
+   
+    ```python
+      def _handle_search_by_name(self) -> None:
+          try:
+              name = input("Enter name to search: ")
+              results = self.model.get_table_data(
+                  "employees",
+                  "id, name, department",
+                  ("name LIKE %s", (f"%{name}%",))
+              )
+              self.view.display_results(results)
+          except ModelError as e:
+              self.view.display_error(str(e))
+    ```
+   
+    ```python
+      def _handle_search_department(self) -> None:
+          try:
+              dept = input("Enter department: ")
+              salary = float(input("Enter minimum salary: "))
+              results = self.model.get_table_data(
+                  "employees",
+                  "name, salary, department",
+                  ("department = %s AND salary >= %s", (dept, salary))
+              )
+              self.view.display_results(results)
+          except ModelError as e:
+              self.view.display_error(str(e))
+    ```

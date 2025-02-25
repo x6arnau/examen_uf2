@@ -1,74 +1,54 @@
-# proven/config/db_config.py
 import psycopg2
 from psycopg2 import OperationalError
+from dataclasses import dataclass
 
+@dataclass
+class DbConfig:
+    user: str = "odoo"
+    password: str = "rEURO841.Turboman"
+    host: str = "192.168.56.102"
+    port: str = "5432"
+    dbname: str = "prova_empresa"
 
 class DatabaseConnection:
-    """
-    Database connection manager for PostgreSQL.
-    author: Arnau Núñez López
-    grup: DAM2
-
-    Attributes:
-        connection: PostgreSQL connection instance
-        cursor: Database cursor for executing queries
-        view: View instance for displaying output
-    """
-
     def __init__(self):
-        """Initialize database connection parameters."""
         self.connection = None
         self.cursor = None
-        self.view = None
+        self._config = DbConfig()
 
     def connect(self):
-        """
-        Establish connection to PostgreSQL database.
-
-        Returns:
-            bool: True if connection successful, False otherwise
-        """
         try:
             self.connection = psycopg2.connect(
-                user="odoo",
-                password="rEURO841.Turboman",
-                host="192.168.56.102",
-                port="5432",
-                dbname="prova_empresa"
+                user=self._config.user,
+                password=self._config.password,
+                host=self._config.host,
+                port=self._config.port,
+                dbname=self._config.dbname
             )
             self.cursor = self.connection.cursor()
             return True
         except OperationalError as e:
-            self.view.display_error(str(e))
-            return False
+            raise DatabaseError(f"Connection failed: {str(e)}")
 
     def disconnect(self):
-        """Close database connection and cursor."""
-        if self.cursor:
-            self.cursor.close()
-        if self.connection:
-            self.connection.close()
+        try:
+            if self.cursor:
+                self.cursor.close()
+            if self.connection:
+                self.connection.close()
+        except Exception as e:
+            raise DatabaseError(f"Disconnect failed: {str(e)}")
 
-    def execute_query(self, query, params=None):
-        """
-        Execute SQL query with optional parameters.
-
-        Args:
-            query (str): SQL query to execute
-            params (tuple, optional): Query parameters. Defaults to None.
-
-        Returns:
-            list: Query results or None if error occurs
-        """
+    def execute_query(self, query: str, params=None):
         try:
             self.cursor.execute(query, params)
-            if query.lower().startswith('select'):
-                results = self.cursor.fetchall()
-                return results
-            else:
-                self.connection.commit()
-                return True
+            if query.lower().strip().startswith('select'):
+                return self.cursor.fetchall()
+            self.connection.commit()
+            return True
         except Exception as e:
-            self.view.display_error(str(e))
             self.connection.rollback()
-            return None
+            raise DatabaseError(f"Query execution failed: {str(e)}")
+
+class DatabaseError(Exception):
+    pass
