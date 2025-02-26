@@ -1,37 +1,37 @@
-# PostgreSQL Database Query Application Template
+# Plantilla de Aplicación de Consultas a Base de Datos PostgreSQL
 
-## Author
+## Autor 📝
 
-- **Name**: Arnau Núñez López
-- **Group**: DAM2
+- **Nombre**: Arnau Núñez López
+- **Grupo**: DAM2
 
-## Requirements
+## Requisitos 📋
 
 - Python 3.x
 - PostgreSQL database server Odoo 14
 - `psycopg2` Python package
 
-## Installation 🚀
+## Instalación 🚀
 
-1. Clone the repository
-2. Install the required dependency:
+1. Clona el repositorio
+2. Instala la dependencia requerida:
    ```bash
    pip install psycopg2
 
-## Project Structure
+## Estructura del Proyecto 📂
 
-- `proven/`: Source code directory
-- `config/db_config.py`: Database configuration
-- `controllers/controller.py`: Controller class
-- `models/model.py`: Model class
-- `views/menu.py`: Menu class
-- `views/menu_options.py`: MenuOptions class
-- `__main__.py`: Main program
+- `proven/`: Directorio de código fuente
+- `config/db_config.py`: Configuración de la base de datos
+- `controllers/controller.py`: Clase Controlador
+- `models/model.py`: Clase Modelo
+- `views/menu.py`: Clase Menu
+- `views/menu_options.py`: Clase Opciones del Menú
+- `__main__.py`: Programa principal
 
-## How to implement a new query? 🤔
+## ¿Cómo implementar una nueva consulta? 🤔
 
-1. Modify the views/menu_options.py class:
-- Add a new menu item with a label and an action.
+1. Modifica la clase views/menu_options.py:
+- Añade un nuevo elemento al menú con una etiqueta y una acción.
    ```python
    def __init__(self):
        """Initialize main menu with default options."""
@@ -41,8 +41,8 @@
        self.add_item("Option 2", "option2")
    ```
 
-2. Modify the controllers/controller.py class:
-- Add a new handler function for each menu item.
+2. Modifica la clase controllers/controller.py class:
+- Añade una nueva función manejadora para cada elemento del menú.
     ```python
     def _setup_menu(self) -> None:
         """Set up menu handlers for each menu item."""
@@ -51,9 +51,9 @@
         self.view.items[2].handler = self._handle_search
    ```
 
-3. New query function examples (proven/controller.py): 😎
+3. Ejemplos de nuevas funciones de consulta (proven/controller.py): 😎
 
-- Simple query example:
+- Ejemplo de consulta simple:
     ```python
     def _handle_view_data(self) -> None:
         try:
@@ -63,7 +63,7 @@
             self.view.display_error(str(e))
     ```
   
-- Query with join example:
+- Ejemplo de consulta con unión (JOIN):
     ```python
     def _handle_join_example(self) -> None:
         try:
@@ -77,7 +77,7 @@
             self.view.display_error(str(e))
     ```
 
-- Query with multiples joins example:
+- Ejemplo de consulta con múltiples uniones (JOIN):
     ```python
     def _handle_triple_join(self) -> None:
         try:
@@ -94,7 +94,7 @@
             self.view.display_error(str(e))
     ```
 
-- Query with conditions example:   
+- Ejemplo de consulta con condiciones:   
     ```python
       def _handle_search_by_id(self) -> None:
           try:
@@ -109,7 +109,7 @@
               self.view.display_error(str(e))
     ```
 
-- Query with multiple conditions exemple 1:   
+- Ejemplo de consulta con múltiples condiciones 1:   
     ```python
       def _handle_search_by_name(self) -> None:
           try:
@@ -123,7 +123,7 @@
           except ModelError as e:
               self.view.display_error(str(e))
     ```
-- Query with multiple conditions exemple 2: 
+- Ejemplo de consulta con múltiples condiciones 2: 
     ```python
       def _handle_search_department(self) -> None:
           try:
