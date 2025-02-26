@@ -31,16 +31,18 @@
 ## How to implement a new query? 🤔
 
 1. Modify the views/menu_options.py class:
-    ```python
-    def __init__(self):
-        """Initialize main menu with default options."""
-        super().__init__()
-        self.add_item("Exit", "exit")
-        self.add_item("Option 1", "option1")
-        self.add_item("Option 2", "option2")
-    ```
+- Add a new menu item with a label and an action.
+   ```python
+   def __init__(self):
+       """Initialize main menu with default options."""
+       super().__init__()
+       self.add_item("Exit", "exit")
+       self.add_item("Option 1", "option1")
+       self.add_item("Option 2", "option2")
+   ```
 
 2. Modify the controllers/controller.py class:
+- Add a new handler function for each menu item.
     ```python
     def _setup_menu(self) -> None:
         """Set up menu handlers for each menu item."""
@@ -69,6 +71,23 @@
                 "employees e JOIN departments d ON e.department_id = d.id",
                 "e.name, e.salary, d.department_name",
                 ("d.department_name = %s", ("Sales",))
+            )
+            self.view.display_results(results)
+        except ModelError as e:
+            self.view.display_error(str(e))
+    ```
+
+- Query with multiples joins example:
+    ```python
+    def _handle_triple_join(self) -> None:
+        try:
+            results = self.model.get_table_data(
+                "employees e " \
+                "JOIN departments d ON e.department_id = d.id " \
+                "JOIN positions p ON e.position_id = p.id " \
+                "JOIN locations l ON d.location_id = l.id",
+                "e.name, d.department_name, p.position_title, l.city",
+                ("l.country = %s AND p.salary_grade > %s", ("Spain", 3))
             )
             self.view.display_results(results)
         except ModelError as e:
