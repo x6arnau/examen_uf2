@@ -1,4 +1,4 @@
-# Plantilla de Aplicación de Consultas a Base de Datos PostgreSQL
+# **Plantilla de Aplicación de Consultas a Base de Datos PostgreSQL**
 
 ## Autor 📝
 
@@ -30,7 +30,7 @@
 
 ## ¿Cómo implementar una nueva consulta? 🤔
 
-1. Modifica la clase views/menu_options.py:
+1. **Modifica** la clase `views/menu_options.py`:
 - Añade un nuevo elemento al menú con una etiqueta y una acción.
    ```python
    def __init__(self):
@@ -41,7 +41,7 @@
        self.add_item("Option 2", "option2")
    ```
 
-2. Modifica la clase controllers/controller.py class:
+2. **Modifica** la clase `controllers/controller.py` class:
 - Añade una nueva función manejadora para cada elemento del menú.
     ```python
     def _setup_menu(self) -> None:
@@ -51,7 +51,7 @@
         self.view.items[2].handler = self._handle_search
    ```
 
-3. Ejemplos de nuevas funciones de consulta (proven/controller.py): 😎
+3. **Ejemplos** de nuevas funciones de consulta (`proven/controller.py`): 😎
 
 - Ejemplo de consulta simple:
     ```python
