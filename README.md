@@ -11,7 +11,7 @@
 - PostgreSQL database server Odoo 14
 - `psycopg2` Python package
 
-## Installation
+## Installation 🚀
 
 1. Clone the repository
 2. Install the required dependency:
@@ -28,9 +28,9 @@
 - `views/menu_options.py`: MenuOptions class
 - `__main__.py`: Main program
 
-## Usage
+## How to implement a new query? 🤔
 
-1. Using the views/menu_options.py class:
+1. Modify the views/menu_options.py class:
     ```python
     def __init__(self):
         """Initialize main menu with default options."""
@@ -40,7 +40,7 @@
         self.add_item("Option 2", "option2")
     ```
 
-2. Using the controllers/controller.py class:
+2. Modify the controllers/controller.py class:
     ```python
     def _setup_menu(self) -> None:
         """Set up menu handlers for each menu item."""
@@ -49,7 +49,7 @@
         self.view.items[2].handler = self._handle_search
    ```
 
-3. Handler function examples:
+3. Handler function examples: 😎
 
 - Simple query example:
     ```python
