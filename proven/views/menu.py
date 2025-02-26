@@ -12,10 +12,8 @@ class MenuItem:
 
     Attributes:
         text (str): Display text for the menu item
-        command (str): Command identifier for the menu item
     """
     text: str
-    command: str
 
 
 class MenuView:
@@ -27,15 +25,14 @@ class MenuView:
         """Initialize an empty menu items list."""
         self.items: List[MenuItem] = []
 
-    def add_item(self, text: str, command: str) -> None:
+    def add_item(self, text: str) -> None:
         """
         Add a new menu item to the menu.
 
         Args:
             text (str): Display text for the menu item
-            command (str): Command identifier for the menu item
         """
-        self.items.append(MenuItem(text, command))
+        self.items.append(MenuItem(text))
 
     def show(self) -> None:
         """Display all menu items with their index numbers."""
