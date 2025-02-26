@@ -51,7 +51,7 @@
         self.view.items[2].handler = self._handle_search
    ```
 
-3. Handler function examples: 😎
+3. New query function examples (proven/controller.py): 😎
 
 - Simple query example:
     ```python
