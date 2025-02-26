@@ -61,6 +61,7 @@ A Python application implementing the MVC (Model-View-Controller) pattern to per
 
 3. Handler function examples:
 
+- Simple query example:
     ```python
     def _handle_view_data(self) -> None:
         try:
@@ -69,7 +70,22 @@ A Python application implementing the MVC (Model-View-Controller) pattern to per
         except ModelError as e:
             self.view.display_error(str(e))
     ```
-   
+  
+- Query with join example:
+    ```python
+    def _handle_join_example(self) -> None:
+        try:
+            results = self.model.get_table_data(
+                "employees e JOIN departments d ON e.department_id = d.id",
+                "e.name, e.salary, d.department_name",
+                ("d.department_name = %s", ("Sales",))
+            )
+            self.view.display_results(results)
+        except ModelError as e:
+            self.view.display_error(str(e))
+    ```
+
+- Query with conditions example:   
     ```python
       def _handle_search_by_id(self) -> None:
           try:
@@ -83,7 +99,8 @@ A Python application implementing the MVC (Model-View-Controller) pattern to per
           except ModelError as e:
               self.view.display_error(str(e))
     ```
-   
+
+- Query with multiple conditions exemple 1:   
     ```python
       def _handle_search_by_name(self) -> None:
           try:
@@ -97,7 +114,7 @@ A Python application implementing the MVC (Model-View-Controller) pattern to per
           except ModelError as e:
               self.view.display_error(str(e))
     ```
-   
+- Query with multiple conditions exemple 2: 
     ```python
       def _handle_search_department(self) -> None:
           try:
