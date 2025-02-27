@@ -70,6 +70,45 @@ class Model:
             params = None
         return self.execute_query(query, params)
 
+    def save_results_to_file(self, results: List[Tuple], filename: str) -> None:
+        """
+        Save query results to a file.
+
+        Args:
+            results (List[Tuple]): Query results to save
+            filename (str): Name of the file to save results to
+
+        Raises:
+            ModelError: If file operation fails
+        """
+        try:
+            if not filename.endswith('.txt'):
+                filename += '.txt'
+
+            with open(filename, 'w', encoding='utf-8') as file:
+                for row in results:
+                    file.write(f"{' | '.join(str(item) for item in row)}\n")
+        except IOError as e:
+            raise ModelError(f"Failed to save results: {str(e)}")
+
+    def save_results_to_csv(self, results: List[Tuple], filename: str) -> None:
+        """
+        Save query results to a CSV file.
+
+        Args:
+            results (List[Tuple]): Query results to save
+
+        Raises:
+            ModelError: If file operation fails
+        """
+        try:
+            if not filename.endswith('.csv'):
+                filename += '.csv'
+            with open(filename, 'w', encoding='utf-8') as file:
+                for row in results:
+                    file.write(f"{','.join(str(item) for item in row)}\n")
+        except IOError as e:
+            raise ModelError(f"Failed to save results: {str(e)}")
 
 class ModelError(Exception):
     """Custom exception for model errors."""

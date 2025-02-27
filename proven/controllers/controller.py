@@ -10,6 +10,9 @@ class Controller:
     grup: DAM2
     """
 
+    RESULTS_TO_CSV_DATA = None
+    RESULTS_TO_CSV_FILENAME = "results.csv"
+
     def __init__(self, model: Model, view: MenuView):
         """
         Initialize controller with model and view.
@@ -26,6 +29,9 @@ class Controller:
         """Set up menu handlers for each menu item."""
         self.view.items[0].handler = self._handle_exit
         self.view.items[1].handler = self._handle_absence_data
+        self.view.items[2].handler = self._handle_absence_days
+        self.view.items[3].handler = self._handle_save_to_csv
+        self.view.items[4].handler = self._handle_calculate_salary
 
     def run(self) -> None:
         """
@@ -64,7 +70,7 @@ class Controller:
         if departments not in ["Sales", "Administration", "Purchases"]:
             self.view.display_error("Invalid department")
             return
-        absence_status = input("Enter absence status you want ((v)validated or (c)confirmed ): ")
+        absence_status = input("Enter absence status you want (v)validated or (c)confirmed: ")
         if absence_status == "v":
             absence_status = "validate"
         elif absence_status == "c":
@@ -83,3 +89,45 @@ class Controller:
             self.view.display_results(results)
         except ModelError as e:
             self.view.display_error(str(e))
+
+    def _handle_absence_days(self) -> None:
+        """Handle absence days menu option."""
+        self.view.display_message("Fetching employees with absence days greater than 5 days...")
+        try:
+            results = self.model.execute_query("""
+                SELECT hd.name, he.name, hl.number_of_days 
+                FROM hr_department hd 
+                JOIN hr_employee he ON hd.id = he.department_id 
+                JOIN hr_leave hl ON he.id = hl.employee_id 
+                WHERE hl.number_of_days > 5
+            """
+            )
+            self.view.display_results(results)
+            filename = input("Enter the name of the file you want to save the results to: ")
+            self.model.save_results_to_file(results, filename)
+            self.view.display_message(f"Results saved to {filename}")
+            self.RESULTS_TO_CSV = results
+            self.RESULTS_TO_CSV_FILENAME = filename
+        except ModelError as e:
+            self.view.display_error(str(e))
+
+    def _handle_save_to_csv(self) -> None:
+        """Handle save to CSV menu option."""
+        if self.RESULTS_TO_CSV is None:
+            self.view.display_error("No results to save")
+            return
+        self.view.display_message("Fetching data to save to CSV...")
+        try:
+            self.model.save_results_to_csv(self.RESULTS_TO_CSV, self.RESULTS_TO_CSV_FILENAME)
+        except ModelError as e:
+            self.view.display_error(str(e))
+
+    def _handle_calculate_salary(self) -> None:
+        try:
+            horas_dedicadas = float(input("Enter the hours: "))
+            tarifa_hora = 360 / (4 * 20)  # 360€ por 4 horas al día durante 20 días
+            total_factura = horas_dedicadas * tarifa_hora
+            self.view.display_message(f"Hours dedicated: {horas_dedicadas}")
+            self.view.display_message(f"Total of the bill: {total_factura:.2f}€")
+        except ValueError:
+            self.view.display_error("Invalid input, please enter a numeric value.")

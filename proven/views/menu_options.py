@@ -14,3 +14,6 @@ class MenuOptions(MenuView):
         super().__init__()
         self.add_item("Exit")
         self.add_item("Absence data")
+        self.add_item("Employees with absence days greater than 5 days")
+        self.add_item("Save data to file (CSV)")
+        self.add_item("Calculate salary")
