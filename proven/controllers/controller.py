@@ -126,6 +126,7 @@ class Controller:
             self.view.display_error(str(e))
 
     def _handle_calculate_salary(self) -> None:
+        """Handle calculate salary menu option."""
         try:
             hours_dedicated = float(input("Enter the hours: "))
             fee = 360 / (4 * 20)  # 360€ por 4 horas al día durante 20 días
