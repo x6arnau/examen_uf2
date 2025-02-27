@@ -60,8 +60,18 @@ class Controller:
 
     def _handle_absence_data(self) -> None:
         """Handle absence data menu option."""
-        departments = input("Enter department you want (sales, administration or purchasing department): ")
-        absence_status = input("Enter absence status you want (validated or confirmed): ")
+        departments = input("Enter department you want ('Sales', 'Administration' or 'Purchases'): ")
+        if departments not in ["Sales", "Administration", "Purchases"]:
+            self.view.display_error("Invalid department")
+            return
+        absence_status = input("Enter absence status you want ((v)validated or (c)confirmed ): ")
+        if absence_status == "v":
+            absence_status = "validate"
+        elif absence_status == "c":
+            absence_status = "confirm"
+        else:
+            self.view.display_error("Invalid absence status")
+            return
         self.view.display_message("Fetching absence data...")
         try:
             results = self.model.get_table_data(
