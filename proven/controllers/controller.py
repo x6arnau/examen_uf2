@@ -10,7 +10,10 @@ class Controller:
     grup: DAM2
     """
 
+    # Stores the results to be saved to a CSV file
     RESULTS_TO_CSV_DATA = None
+
+    # Default filename for saving results to a CSV file
     RESULTS_TO_CSV_FILENAME = "results.csv"
 
     def __init__(self, model: Model, view: MenuView):
@@ -124,10 +127,10 @@ class Controller:
 
     def _handle_calculate_salary(self) -> None:
         try:
-            horas_dedicadas = float(input("Enter the hours: "))
-            tarifa_hora = 360 / (4 * 20)  # 360€ por 4 horas al día durante 20 días
-            total_factura = horas_dedicadas * tarifa_hora
-            self.view.display_message(f"Hours dedicated: {horas_dedicadas}")
-            self.view.display_message(f"Total of the bill: {total_factura:.2f}€")
+            hours_dedicated = float(input("Enter the hours: "))
+            fee = 360 / (4 * 20)  # 360€ por 4 horas al día durante 20 días
+            total_bill = hours_dedicated * fee
+            self.view.display_message(f"Hours dedicated: {hours_dedicated}")
+            self.view.display_message(f"Total of the bill: {total_bill:.2f}€")
         except ValueError:
             self.view.display_error("Invalid input, please enter a numeric value.")
