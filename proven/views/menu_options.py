@@ -13,5 +13,4 @@ class MenuOptions(MenuView):
         """Initialize main menu with default options."""
         super().__init__()
         self.add_item("Exit")
-        self.add_item("Option 1")
-        self.add_item("Option 2")
+        self.add_item("Absence data")

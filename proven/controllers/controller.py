@@ -25,8 +25,7 @@ class Controller:
     def _setup_menu(self) -> None:
         """Set up menu handlers for each menu item."""
         self.view.items[0].handler = self._handle_exit
-        self.view.items[1].handler = self._handle_view_data
-        self.view.items[2].handler = self._handle_search
+        self.view.items[1].handler = self._handle_absence_data
 
     def run(self) -> None:
         """
@@ -59,25 +58,18 @@ class Controller:
         self.view.display_message("Disconnected from database")
         exit(0)
 
-    def _handle_view_data(self) -> None:
-        """Handle view all data menu option."""
+    def _handle_absence_data(self) -> None:
+        """Handle absence data menu option."""
+        departments = input("Enter department you want (sales, administration or purchasing department): ")
+        absence_status = input("Enter absence status you want (validated or confirmed): ")
+        self.view.display_message("Fetching absence data...")
         try:
-            #results = self.model.get_table_data("table_name")
-            #self.view.display_results(results)
-            self.view.display_message("Option 1 selected")
-        except ModelError as e:
-            self.view.display_error(str(e))
-
-    def _handle_search(self) -> None:
-        """Handle search menu option."""
-        try:
-            #name = input("Enter data to search: ")
-            #results = self.model.get_table_data(
-            #    "table_name",
-            #    "column1, column2, column3",
-            #    ("column2 LIKE %s", (f"%{name}%",))
-            #)
-            #self.view.display_results(results)
-            self.view.display_message("Option 2 selected")
+            results = self.model.get_table_data(
+                "hr_department hd, hr_employee he, hr_leave hl, hr_leave_type hlt",
+                "hd.name, he.name, he.work_email, hl.number_of_days, hlt.name, hl.private_name, hl.request_date_to, hl.request_date_from",
+                ("hd.id = he.id AND hl.id = hd.id AND hd.id = hlt.id AND hd.name = %s AND hl.state = %s",
+                 (departments, absence_status))
+            )
+            self.view.display_results(results)
         except ModelError as e:
             self.view.display_error(str(e))

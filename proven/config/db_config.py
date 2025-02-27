@@ -18,8 +18,8 @@ class DbConfig:
         port (str): Database port number.
         dbname (str): Database name.
     """
-    user: str = "odoo"
-    password: str = "rEURO841.Turboman"
+    user: str = "postgres"
+    password: str = "postgres"
     host: str = "192.168.56.102"
     port: str = "5432"
     dbname: str = "prova_empresa"
