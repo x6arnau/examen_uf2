@@ -154,15 +154,15 @@ _- Ejemplo de consulta con múltiples condiciones 2:_
 
 ```python
       def _handle_search_department(self) -> None:
-  try:
-    dept = input("Enter department: ")
-    salary = float(input("Enter minimum salary: "))
-    results = self.model.get_table_data(
-      "employees",
-      "name, salary, department",
-      ("department = %s AND salary >= %s", (dept, salary))
-    )
-    self.view.display_results(results)
-  except ModelError as e:
-    self.view.display_error(str(e))
+try:
+  dept = input("Enter department: ")
+  salary = float(input("Enter minimum salary: "))
+  results = self.model.get_table_data(
+    "employees",
+    "name, salary, department",
+    ("department = %s AND salary >= %s", (dept, salary))
+  )
+  self.view.display_results(results)
+except ModelError as e:
+  self.view.display_error(str(e))
 ```
