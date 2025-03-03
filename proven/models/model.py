@@ -91,6 +91,27 @@ class Model:
         except IOError as e:
             raise ModelError(f"Failed to save results: {str(e)}")
 
+    def show_results_to_file(self, results: List[Tuple], filename: str) -> None:
+        """
+        Save query results to a file.
+
+        Args:
+            results (List[Tuple]): Query results to read
+            filename (str): Name of the file to read results to
+
+        Raises:
+            ModelError: If file operation fails
+        """
+        try:
+            if not filename.endswith('.txt'):
+                filename += '.txt'
+
+            with open(filename, 'r', encoding='utf-8') as file:
+                for row in results:
+                    print(file.readline(row))
+        except IOError as e:
+            raise ModelError(f"Failed to save results: {str(e)}")
+
     def save_results_to_csv(self, results: List[Tuple], filename: str) -> None:
         """
         Save query results to a CSV file.
